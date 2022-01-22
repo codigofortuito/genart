@@ -13,7 +13,7 @@ const sketch = () => {
 
   const createGrid = () => {
     const points = []
-    const count = 150
+    const count = 35
 
     for (let x = 0; x < count; x++) {
       for (let y = 0; y < count; y++) {
@@ -22,13 +22,11 @@ const sketch = () => {
         const u = count <= 1 ? 0.5 : x / (count - 1)
         const v = count <= 1 ? 0.5 : y / (count - 1)
 
-        const radius = Math.abs(random.noise2D(u, v)) * 0.1
         points.push({
           position: [u, v],
           // gaussian creates a less uniform randomness
-          radius,
+          radius: Math.abs(random.gaussian() * 0.02),
           color: random.pick(palette),
-          rotation: random.noise2D(u, v),
         })
       }
     }
@@ -40,31 +38,21 @@ const sketch = () => {
     context.fillStyle = 'white'
     context.fillRect(0, 0, width, height)
 
+    random.setSeed(10) // creates a deterministic random, so it not changes with refresh
     const points = createGrid().filter(() => random.gaussian() > 0.5)
     const margin = 200
 
     points.forEach((data) => {
-      const { position, radius, color, rotation } = data
+      const { position, radius, color } = data
       const [u, v] = position
 
       const x = lerp(margin, width - margin, u) // intrpolates between the first two params
       const y = lerp(margin, height - margin, v)
 
-      // context.beginPath()
-      // context.arc(x, y, radius * width, 0, Math.PI * 2, false)
-      // context.fillStyle = color
-      // context.fill()
-
-      // save the canvas state at this point to avoid acumulate rotations
-      context.save()
+      context.beginPath()
+      context.arc(x, y, radius * width, 0, Math.PI * 2, false)
       context.fillStyle = color
-      context.font = `${radius * width}px "Arial"`
-      // rotate from the grid coordinate
-      context.translate(x, y)
-      context.rotate(rotation)
-      // because we have already translate to the coordinate
-      context.fillText('<', 0, 0)
-      context.restore()
+      context.fill()
     })
   }
 }
