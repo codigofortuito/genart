@@ -13,7 +13,7 @@ const sketch = () => {
 
   const createGrid = () => {
     const points = []
-    const count = 150
+    const count = 85
 
     for (let x = 0; x < count; x++) {
       for (let y = 0; y < count; y++) {
@@ -63,7 +63,7 @@ const sketch = () => {
       context.translate(x, y)
       context.rotate(rotation)
       // because we have already translate to the coordinate
-      context.fillText('<', 0, 0)
+      context.fillText('%', 0, 0)
       context.restore()
     })
   }
